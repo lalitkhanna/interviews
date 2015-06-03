@@ -1,0 +1,70 @@
+﻿@model Employee.Models.EmployeeModel
+@{
+    ViewBag.Title = "AddEmployee";
+    Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+<h2>Add Employee</h2>
+
+<script language="javascript" type="text/javascript">
+    function GetCity(_stateId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#ddlcity").html(procemessage).show();
+        var url = "/Home/GetCityByStaeId/";
+
+        $.ajax({
+            url: url,
+            data: { stateid: _stateId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Select City...</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#ddlcity").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+</script>
+
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Add Employee Form</legend>
+        <ol>
+            <li>
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
+                @Html.ValidationMessageFor(m => m.Name)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.Designation)
+                @Html.TextBoxFor(m => m.Designation)
+                @Html.ValidationMessageFor(m => m.Designation)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.StateID)
+                @Html.DropDownListFor(model => model.StateID, ((IEnumerable<Employee.Models.State>)ViewBag.StateID)
+                .Select(option => new SelectListItem
+                {
+                    Text = (option == null ? "None" : option.StateName),
+                    Value = option.Id.ToString(),
+                    Selected = (Model != null) && (option.Id == Model.StateID)
+                }), "Select State...",
+                new { @id = "ddlstate", @style = "width:300px;  height: 30px", @onchange = "javascript:GetCity(this.value);" })
+                @Html.ValidationMessageFor(m => m.StateID)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.CityID)
+                @Html.DropDownListFor(m => m.StateID, new SelectList(ViewBag.CityID, "Id", "CityName"), new { @id = "ddlcity", @style = "width:300px; height: 30px " })
+                @Html.ValidationMessageFor(m => m.CityID)
+            </li>
+        </ol>
+        <input type="submit" value="Add Employee" />
+    </fieldset>
+}

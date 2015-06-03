@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Employee.Models.EmployeeModel>
+@{
+    ViewBag.Title = "AllEmployees";
+    Layout = "~/Views/Shared/_LayoutPageNew.cshtml";
+}
+
+<h2>All Employees</h2>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Designation</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>           
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Designation)
+            </td>    
+        </tr>
+    }
+</table>
